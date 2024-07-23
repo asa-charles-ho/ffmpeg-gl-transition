@@ -7,9 +7,10 @@
 #include "libavutil/opt.h"
 #include "internal.h"
 #include "framesync.h"
+#include "video.h"
+#include "formats.h"
 
 #ifndef __APPLE__
-# define GL_TRANSITION_USING_EGL //remove this line if you don't want to use EGL
 #endif
 
 #ifdef __APPLE__
@@ -603,8 +604,7 @@ static const AVFilterPad gltransition_inputs[] = {
   {
     .name = "to",
     .type = AVMEDIA_TYPE_VIDEO,
-  },
-  {NULL}
+  }
 };
 
 static const AVFilterPad gltransition_outputs[] = {
@@ -612,8 +612,7 @@ static const AVFilterPad gltransition_outputs[] = {
     .name = "default",
     .type = AVMEDIA_TYPE_VIDEO,
     .config_props = config_output,
-  },
-  {NULL}
+  }
 };
 
 AVFilter ff_vf_gltransition = {
@@ -623,10 +622,10 @@ AVFilter ff_vf_gltransition = {
   .preinit       = gltransition_framesync_preinit,
   .init          = init,
   .uninit        = uninit,
-  .query_formats = query_formats,
+  FILTER_QUERY_FUNC(query_formats),
   .activate      = activate,
-  .inputs        = gltransition_inputs,
-  .outputs       = gltransition_outputs,
+  FILTER_INPUTS(gltransition_inputs),
+  FILTER_OUTPUTS(gltransition_outputs),
   .priv_class    = &gltransition_class,
   .flags         = AVFILTER_FLAG_SUPPORT_TIMELINE_GENERIC
 };
